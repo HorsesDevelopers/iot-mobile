@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../application/auth_provider.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -38,7 +38,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     const Icon(Icons.app_registration, size: 80, color: Colors.deepPurple),
                     const SizedBox(height: 24),
 
-                    // Mensaje de error
                     if (authProvider.error != null)
                       Container(
                         margin: const EdgeInsets.only(bottom: 16),
@@ -144,15 +143,12 @@ class _RegisterPageState extends State<RegisterPage> {
         );
 
         if (success && mounted) {
-          // Mostrar mensaje de éxito
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Registro exitoso. Ahora puedes iniciar sesión.'),
               backgroundColor: Colors.green,
             ),
           );
-
-          // Regresar a la pantalla de login
           Navigator.pop(context);
         }
       } catch (e) {

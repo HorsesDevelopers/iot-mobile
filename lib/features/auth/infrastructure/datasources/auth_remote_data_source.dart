@@ -29,6 +29,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     if (response.statusCode == 200) {
       try {
         final jsonResponse = jsonDecode(response.body);
+        // Verificar que el token existe en la respuesta
         if (jsonResponse['token'] != null && jsonResponse['token'].isNotEmpty) {
           return AuthResponseDto.fromJson(jsonResponse);
         } else {
@@ -63,8 +64,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           'roles': roles,
         }),
       );
-
-      // Imprime la respuesta para depuración
       print('Respuesta registro: ${response.statusCode} - ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {

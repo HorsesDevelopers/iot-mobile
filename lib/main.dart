@@ -12,6 +12,11 @@ import 'features/auth/application/auth_provider.dart';
 import 'features/auth/infrastructure/datasources/auth_remote_data_source.dart';
 import 'features/auth/infrastructure/datasources/auth_local_data_source.dart';
 import 'features/auth/infrastructure/repositories/auth_repository_impl.dart';
+import 'features/notifications/application/notification_provider.dart';
+import 'features/notifications/domain/usecases/get_notifications_use_case.dart';
+import 'features/notifications/infrastructure/datasources/notification_remote_data_source.dart';
+import 'features/notifications/infrastructure/repositories/notification_repository_impl.dart';
+import 'features/notifications/presentation/pages/notifications_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,53 +34,92 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider(
-          create: (_) => HttpClientWrapper(client: http.Client()),
+        // 1. Servicios base
+        Provider<http.Client>(
+          create: (_) => http.Client(),
+          dispose: (_, client) => client.close(),
         ),
-        Provider(
+        Provider<SharedPreferences>.value(value: sharedPreferences),
+
+        // 2. Dependencias de infraestructura
+        Provider<HttpClientWrapper>(
+          create: (context) => HttpClientWrapper(
+            client: context.read<http.Client>(),
+            enableLogging: true,
+          ),
+        ),
+
+        // 3. Data sources
+        Provider<AuthLocalDataSourceImpl>(
+          create: (context) => AuthLocalDataSourceImpl(
+            sharedPreferences: context.read<SharedPreferences>(),
+          ),
+        ),
+        Provider<AuthRemoteDataSourceImpl>(
           create: (context) => AuthRemoteDataSourceImpl(
             client: context.read<HttpClientWrapper>(),
           ),
         ),
-        Provider(
-          create: (context) => AuthLocalDataSourceImpl(
-            sharedPreferences: sharedPreferences,
+        Provider<NotificationRemoteDataSourceImpl>(
+          create: (context) => NotificationRemoteDataSourceImpl(
+            client: context.read<http.Client>(),
+            localDataSource: context.read<AuthLocalDataSourceImpl>(),
           ),
         ),
-        Provider(
+
+        Provider<AuthRepositoryImpl>(
           create: (context) => AuthRepositoryImpl(
             remoteDataSource: context.read<AuthRemoteDataSourceImpl>(),
             localDataSource: context.read<AuthLocalDataSourceImpl>(),
           ),
         ),
-        Provider(
+        Provider<NotificationRepositoryImpl>(
+          create: (context) => NotificationRepositoryImpl(
+            remoteDataSource: context.read<NotificationRemoteDataSourceImpl>(),
+          ),
+        ),
+
+        Provider<SignInUseCase>(
           create: (context) => SignInUseCase(
             context.read<AuthRepositoryImpl>(),
           ),
         ),
-        Provider(
+        Provider<SignUpUseCase>(
           create: (context) => SignUpUseCase(
             context.read<AuthRepositoryImpl>(),
           ),
         ),
-        ChangeNotifierProvider(
+        Provider<GetNotificationsUseCase>(
+          create: (context) => GetNotificationsUseCase(
+            context.read<NotificationRepositoryImpl>(),
+          ),
+        ),
+
+        ChangeNotifierProvider<AuthProvider>(
           create: (context) => AuthProvider(
             signInUseCase: context.read<SignInUseCase>(),
             signUpUseCase: context.read<SignUpUseCase>(),
           ),
         ),
+        ChangeNotifierProvider<NotificationProvider>(
+          create: (context) => NotificationProvider(
+            getNotificationsUseCase: context.read<GetNotificationsUseCase>(),
+          ),
+          lazy: false,
+        ),
       ],
       child: MaterialApp(
-        title: 'FeedGuard DDD',
+        title: 'FeedGuard',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         initialRoute: '/login',
         routes: {
           '/login': (context) => const LoginPage(),
           '/register': (context) => const RegisterPage(),
           '/home': (context) => const HomePage(),
+          '/notifications': (context) => const NotificationsPage(),
         },
       ),
     );

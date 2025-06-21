@@ -1,36 +1,29 @@
 import 'package:http/http.dart' as http;
 
-class HttpClientWrapper extends http.BaseClient {
-  final http.Client _client;
+
+class HttpClientWrapper {
+  final http.Client client;
   final bool enableLogging;
 
   HttpClientWrapper({
-    required http.Client client,
+    required this.client,
     this.enableLogging = true,
-  }) : _client = client;
+  });
 
-  @override
-  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+  Future<http.Response> post(Uri url, {Map<String, String>? headers, Object? body}) async {
     if (enableLogging) {
-      print('🚀 REQUEST: ${request.method} ${request.url}');
-      print('Headers: ${request.headers}');
-      if (request is http.Request) {
-        print('Body: ${request.body}');
-      }
+      print('🚀 REQUEST: POST $url');
+      print('Headers: $headers');
+      print('Body: $body');
     }
 
-    final response = await _client.send(request);
+    final response = await client.post(url, headers: headers, body: body);
 
     if (enableLogging) {
       print('📥 RESPONSE: ${response.statusCode}');
+      print('Body: ${response.body}');
     }
 
     return response;
-  }
-
-  @override
-  void close() {
-    _client.close();
-    super.close();
   }
 }
