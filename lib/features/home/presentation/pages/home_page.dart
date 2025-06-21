@@ -50,13 +50,13 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.network(
-                    'https://i.imgur.com/YOUR_IMAGE1.png',
+                    'https://i.imgur.com',
                     height: 70,
                     width: 70,
                     fit: BoxFit.cover,
                   ),
                   Image.network(
-                    'https://i.imgur.com/YOUR_IMAGE2.png',
+                    'https://i.imgur.com',
                     height: 70,
                     width: 70,
                     fit: BoxFit.cover,
