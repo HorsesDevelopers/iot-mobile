@@ -93,7 +93,7 @@ class PondStatsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildKPI(
-                  title: 'Average Oxygen Level a',
+                  title: 'Average Oxygen Level',
                   value: '${averageOxygenLevel.toStringAsFixed(1)} mg/L',
                   icon: Icons.water,
                 ),
