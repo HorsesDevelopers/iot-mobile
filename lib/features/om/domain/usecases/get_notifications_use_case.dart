@@ -1,4 +1,4 @@
-// lib/features/notifications/domain/usecases/get_notifications_use_case.dart
+// lib/features/om/domain/usecases/get_notifications_use_case.dart
 import 'package:dartz/dartz.dart';
 import '../repositories/notification_repository.dart';
 import '../entities/notification.dart';

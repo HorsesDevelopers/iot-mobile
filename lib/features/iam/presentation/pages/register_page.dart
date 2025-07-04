@@ -1,4 +1,4 @@
-// lib/features/auth/presentation/pages/register_page.dart
+// lib/features/iam/presentation/pages/register_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../application/auth_provider.dart';
