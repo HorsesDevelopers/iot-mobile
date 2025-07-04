@@ -4,6 +4,7 @@ import 'package:mobile/features/assets-and-resources/presentation/pond-list/pond
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/network/http_client_wrapper.dart';
+import 'features/analytics/presentation/pond-analytics/pond_analytics.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 import 'features/auth/presentation/pages/register_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
@@ -115,13 +116,14 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initialRoute: '/login',
+        initialRoute: '/ponds-analytics',
         routes: {
           '/login': (context) => const LoginPage(),
           '/register': (context) => const RegisterPage(),
           '/home': (context) => const HomePage(),
           '/notifications': (context) => const NotificationsPage(),
           '/ponds': (context) => const PondListScreen(),
+          '/ponds-analytics': (context) => PondStatsPage()
         },
       ),
     );

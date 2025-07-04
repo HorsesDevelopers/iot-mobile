@@ -12,8 +12,15 @@ class PondStatsPage extends StatelessWidget {
   ];
 
   // Simulamos KPIs
-  final double oxygenLevel = 5.8;
-  final double turbidity = 30.5;
+  //Nivel promedio de oxigeno
+  final double averageOxygenLevel = 5.8;
+  //Valor promedio de turbidez
+  final double ntu = 30.5;
+  //KPIs de temperatura
+  double averageTemperatureLevel = 10;
+  double maximumDailyTemperature = 12;
+  double minimumDailyTemperature = 5;
+
 
   @override
   Widget build(BuildContext context) {
@@ -86,13 +93,13 @@ class PondStatsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildKPI(
-                  title: 'Oxygen Level',
-                  value: '${oxygenLevel.toStringAsFixed(1)} mg/L',
+                  title: 'Average Oxygen Level',
+                  value: '${averageOxygenLevel.toStringAsFixed(1)} mg/L',
                   icon: Icons.water,
                 ),
                 _buildKPI(
                   title: 'Turbidity',
-                  value: '${turbidity.toStringAsFixed(1)} NTU',
+                  value: '${ntu.toStringAsFixed(1)} NTU',
                   icon: Icons.waves,
                 ),
               ],
