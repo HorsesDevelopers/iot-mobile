@@ -116,14 +116,14 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initialRoute: '/ponds-analytics',
+        initialRoute: '/ponds',
         routes: {
           '/login': (context) => const LoginPage(),
           '/register': (context) => const RegisterPage(),
           '/home': (context) => const HomePage(),
           '/notifications': (context) => const NotificationsPage(),
           '/ponds': (context) => const PondListScreen(),
-          '/ponds-analytics': (context) => PondStatsPage()
+          '/ponds-analytics': (context) => PondStatsPage(),
         },
       ),
     );
