@@ -199,7 +199,11 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildActionButton(String text) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        if (text == 'See Tasks') {
+          Navigator.pushReplacementNamed(context, '/tasks');
+        }
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.redAccent.shade100,
         padding: const EdgeInsets.symmetric(vertical: 12),
