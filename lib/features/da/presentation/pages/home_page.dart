@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       if (!authProvider.isAuthenticated) {
-        Navigator.of(context).pushReplacementNamed('/login');
+        Navigator.of(context).pushReplacementNamed('/home');
       }
     });
   }
@@ -52,13 +52,13 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.network(
-                    'https://i.imgur.com',
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyXxzSWr0cei2ueRODd1cff6igFil93drvLQ&s',
                     height: 70,
                     width: 70,
                     fit: BoxFit.cover,
                   ),
                   Image.network(
-                    'https://i.imgur.com',
+                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyXxzSWr0cei2ueRODd1cff6igFil93drvLQ&s',
                     height: 70,
                     width: 70,
                     fit: BoxFit.cover,
