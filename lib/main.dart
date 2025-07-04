@@ -17,6 +17,8 @@ import 'features/om/domain/usecases/get_notifications_use_case.dart';
 import 'features/om/infrastructure/datasources/notification_remote_data_source.dart';
 import 'features/om/infrastructure/repositories/notification_repository_impl.dart';
 import 'features/om/presentation/pages/notifications_page.dart';
+import 'features/tasks/presentation/pages/tasks_page.dart';
+import 'features/tasks/application/task_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -107,6 +109,9 @@ class MyApp extends StatelessWidget {
           ),
           lazy: false,
         ),
+        ChangeNotifierProvider<TaskProvider>(
+          create: (context) => TaskProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'FeedGuard',
@@ -120,6 +125,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const RegisterPage(),
           '/home': (context) => const HomePage(),
           '/notifications': (context) => const NotificationsPage(),
+          '/tasks': (context) => const TasksPage(),
         },
       ),
     );
