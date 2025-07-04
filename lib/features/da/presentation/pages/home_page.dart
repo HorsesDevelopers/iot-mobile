@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/features/assets-and-resources/presentation/pond-list/pond_list_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../iam/application/auth_provider.dart';
 import '../../../om/application/notification_provider.dart';
@@ -64,6 +65,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/ponds');
+              },
             ),
             const SizedBox(height: 20),
             _buildCard(
@@ -80,6 +84,9 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const PondListScreen()));
+              },
             ),
             const SizedBox(height: 20),
             _buildNotificationsCard(context),
@@ -153,7 +160,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildCard({required String title, required Widget child}) {
+  Widget _buildCard({required String title, required Widget child, required VoidCallback onPressed}) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black26),
@@ -170,7 +177,7 @@ class _HomePageState extends State<HomePage> {
           child,
           const SizedBox(height: 12),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.redAccent.shade100,
               shape: RoundedRectangleBorder(

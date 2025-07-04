@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/features/assets-and-resources/presentation/pond-list/pond_list_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/network/http_client_wrapper.dart';
@@ -120,6 +121,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => const RegisterPage(),
           '/home': (context) => const HomePage(),
           '/notifications': (context) => const NotificationsPage(),
+          '/ponds': (context) => const PondListScreen(),
         },
       ),
     );
