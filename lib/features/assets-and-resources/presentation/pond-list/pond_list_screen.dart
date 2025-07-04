@@ -14,14 +14,14 @@ class PondListScreen extends StatelessWidget {
         name: 'River Pond',
         fish: 10,
         sensors: 5,
-        imageUrl: 'https://i.imgur.com/8fK4h6Y.png',
+        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyXxzSWr0cei2ueRODd1cff6igFil93drvLQ&s',
       ),
       Pond(
         id: '2',
         name: 'Home Pond',
         fish: 3,
         sensors: 2,
-        imageUrl: 'https://i.imgur.com/AGyx5Bl.png',
+        imageUrl: 'https://c8.alamy.com/comp/ET160H/goldfish-pond-dong-yang-palace-lu-residential-complex-imperial-palace-ET160H.jpg',
       ),
     ];
     return Scaffold(
