@@ -3,6 +3,8 @@ import 'package:mobile/features/assets-and-resources/domain/entities/pond.dart';
 import 'package:mobile/features/assets-and-resources/presentation/pond-comparison/pond_comparison_page.dart' as comparison;
 import 'package:mobile/features/assets-and-resources/presentation/pond-detail/pond_card_screen.dart' as detail;
 
+import '../pond-create/pond_create.dart';
+
 class PondListScreen extends StatelessWidget {
   const PondListScreen({super.key});
 
@@ -33,6 +35,24 @@ class PondListScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Create Pond Button (just under the title)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CreatePondPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent.shade100,
+                minimumSize: const Size.fromHeight(50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Create Pond'),
+            ),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
                 itemCount: ponds.length,
