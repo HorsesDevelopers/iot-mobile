@@ -4,6 +4,7 @@ import '../../../auth/application/auth_provider.dart';
 import '../../../notifications/application/notification_provider.dart';
 import '../../../notifications/presentation/pages/notifications_page.dart';
 import '../../../notifications/presentation/widgets/notification_badge.dart';
+import '../../../sidebar/presentation/sidebar_drawer.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(),
+      drawer: const SidebarDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.black87,
         leading: Builder(
