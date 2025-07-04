@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/notification_dto.dart';
 import '../../../../core/errors/exceptions.dart';
-import '../../../auth/infrastructure/datasources/auth_local_data_source.dart';
+import '../../../iam/infrastructure/datasources/auth_local_data_source.dart';
 
 abstract class NotificationRemoteDataSource {
   Future<List<NotificationDto>> getNotifications();
@@ -25,7 +25,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       final token = await localDataSource.getToken();
 
       final response = await client.get(
-        Uri.parse('$baseUrl/notifications'),
+        Uri.parse('$baseUrl/om'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -57,7 +57,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       final token = await localDataSource.getToken();
 
       final response = await client.patch(
-        Uri.parse('$baseUrl/notifications/$notificationId/read'),
+        Uri.parse('$baseUrl/om/$notificationId/read'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
         );
 
         if (success && mounted) {
-          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushReplacementNamed(context, '/da');
         } else if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

@@ -16,10 +16,10 @@ class SidebarDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           const SizedBox(height: 40),
-          _buildDrawerItem(context, 'Home', route: '/home'),
+          _buildDrawerItem(context, 'Home', route: '/da'),
           _buildDrawerItem(context, 'My Ponds'),
           _buildDrawerItem(context, 'Devices'),
-          _buildDrawerItem(context, 'Notifications', route: '/notifications'),
+          _buildDrawerItem(context, 'Notifications', route: '/om'),
           _buildDrawerItem(context, 'Tasks'),
           _buildDrawerItem(context, 'Settings'),
           const Divider(),
