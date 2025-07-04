@@ -20,7 +20,7 @@ class SidebarDrawer extends StatelessWidget {
           _buildDrawerItem(context, 'My Ponds'),
           _buildDrawerItem(context, 'Devices'),
           _buildDrawerItem(context, 'Notifications', route: '/om'),
-          _buildDrawerItem(context, 'Tasks'),
+          _buildDrawerItem(context, 'Tasks', route: '/tasks'),
           _buildDrawerItem(context, 'Settings'),
           const Divider(),
           _buildDrawerItem(context, 'Log out', isLogout: true, route: '/login'),

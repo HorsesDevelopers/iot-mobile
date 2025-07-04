@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/task_card.dart';
 import 'package:mobile/features/tasks/application/task_provider.dart';
+import '../../../sidebar/presentation/sidebar_drawer.dart';
 
 class TasksPage extends StatelessWidget {
   const TasksPage({super.key});
@@ -12,11 +13,10 @@ class TasksPage extends StatelessWidget {
     final tasks = taskProvider.tasks;
 
     return Scaffold(
+      drawer: const SidebarDrawer(),
       appBar: AppBar(
-        title: const Text('Tasks'),
         backgroundColor: Colors.black87,
       ),
-      drawer: const Drawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
