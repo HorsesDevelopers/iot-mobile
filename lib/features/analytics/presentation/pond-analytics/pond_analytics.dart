@@ -89,8 +89,10 @@ class PondStatsPage extends StatelessWidget {
             const SizedBox(height: 32),
 
             // KPIs
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              alignment: WrapAlignment.center,
               children: [
                 _buildKPI(
                   title: 'Average Oxygen Level',
@@ -101,6 +103,21 @@ class PondStatsPage extends StatelessWidget {
                   title: 'Turbidity',
                   value: '${ntu.toStringAsFixed(1)} NTU',
                   icon: Icons.waves,
+                ),
+                _buildKPI(
+                  title: 'Average Daily Temperature',
+                  value: '${averageTemperatureLevel.toStringAsFixed(1)} C',
+                  icon: Icons.speed,
+                ),
+                _buildKPI(
+                  title: 'Max Daily Temperature',
+                  value: '${maximumDailyTemperature.toStringAsFixed(1)} C',
+                  icon: Icons.line_axis,
+                ),
+                _buildKPI(
+                  title: 'Min Daily Temperature',
+                  value: '${minimumDailyTemperature.toStringAsFixed(1)} C',
+                  icon: Icons.line_axis,
                 ),
               ],
             ),
@@ -119,7 +136,7 @@ class PondStatsPage extends StatelessWidget {
       width: 150,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.redAccent.shade100,
+        color: Colors.blueAccent.shade100,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
