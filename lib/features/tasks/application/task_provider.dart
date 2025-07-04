@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import '../../tasks/domain/models/task_model.dart';
 
 class TaskProvider extends ChangeNotifier {
-  final List<String> _tasks = ['Task 1', 'Task 2', 'Task 3', 'Task 4'];
+  final List<TaskModel> _tasks = [
+    TaskModel(title: 'Check Filters', description: 'Inspect water filters for debris and clogs.'),
+    TaskModel(title: 'Feed Fish', description: 'Distribute feed to ponds 1, 2 and 4.'),
+    TaskModel(title: 'Clean Sensors', description: 'Wipe and calibrate dissolved oxygen sensors.'),
+    TaskModel(title: 'System Check', description: 'Verify pH and temperature sensors are online.'),
+  ];
 
-  List<String> get tasks => _tasks;
+  List<TaskModel> get tasks => _tasks;
 
   void removeTask(int index) {
     _tasks.removeAt(index);
-    notifyListeners();
-  }
-
-  void resetTasks() {
-    _tasks.clear();
-    _tasks.addAll(['Task 1', 'Task 2', 'Task 3', 'Task 4']);
     notifyListeners();
   }
 }

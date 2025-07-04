@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/task_card.dart';
-import 'package:mobile/features/tasks/application/task_provider.dart';
+import '../../application/task_provider.dart';
+import '../../domain/models/task_model.dart';
 import '../../../sidebar/presentation/sidebar_drawer.dart';
 
 class TasksPage extends StatelessWidget {
@@ -28,9 +29,10 @@ class TasksPage extends StatelessWidget {
               child: ListView.builder(
                 itemCount: tasks.length,
                 itemBuilder: (context, index) {
+                  final task = tasks[index];
                   return TaskCard(
-                    title: tasks[index],
-                    description: 'Lorem ipsum dolor sit amet.',
+                    title: task.title,
+                    description: task.description,
                     onCheck: () => taskProvider.removeTask(index),
                   );
                 },
@@ -55,3 +57,4 @@ class TasksPage extends StatelessWidget {
     );
   }
 }
+
