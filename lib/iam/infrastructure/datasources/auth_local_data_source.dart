@@ -1,7 +1,7 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../public/core/errors/exceptions.dart';
+import '../../../common/core/errors/exceptions.dart';
 
 abstract class AuthLocalDataSource {
   Future<String> getToken();

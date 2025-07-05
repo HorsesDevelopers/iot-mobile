@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import '../../../public/core/errors/failures.dart';
+import '../../../common/core/errors/failures.dart';
 import '../repositories/auth_repository.dart';
 import '../value_objects/auth_token.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
-import '../../../public/core/errors/exceptions.dart';
-import '../../../public/core/network/http_client_wrapper.dart';
+import '../../../common/core/errors/exceptions.dart';
+import '../../../common/core/network/http_client_wrapper.dart';
 import '../models/auth_response_dto.dart';
 import '../models/user_dto.dart';
 

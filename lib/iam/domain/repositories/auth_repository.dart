@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:mobile/public/core/errors/failures.dart';
+import 'package:mobile/common/core/errors/failures.dart';
 import '../entities/user.dart';
 import '../value_objects/auth_token.dart';
 

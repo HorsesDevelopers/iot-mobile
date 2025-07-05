@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/public/core/network/http_client_wrapper.dart';
+import 'package:mobile/common/core/network/http_client_wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'aar/presentation/pond-list/pond_list_screen.dart';

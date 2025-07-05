@@ -5,7 +5,7 @@ import '../../../iam/application/auth_provider.dart';
 import '../../oam/application/notification_provider.dart';
 import '../../oam/presentation/pages/notifications_page.dart';
 import '../../oam/presentation/widgets/notification_badge.dart';
-import '../../public/sidebar/presentation/sidebar_drawer.dart';
+import '../../common/sidebar/presentation/sidebar_drawer.dart';
 
 
 class HomePage extends StatefulWidget {

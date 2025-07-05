@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import '../../../public/core/errors/exceptions.dart';
-import '../../../public/core/errors/failures.dart';
+import '../../../common/core/errors/exceptions.dart';
+import '../../../common/core/errors/failures.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/value_objects/auth_token.dart';

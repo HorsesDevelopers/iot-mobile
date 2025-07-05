@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../../public/core/errors/exceptions.dart';
+import '../../../common/core/errors/exceptions.dart';
 import '../models/notification_dto.dart';
 import '../../../iam/infrastructure/datasources/auth_local_data_source.dart';
 
