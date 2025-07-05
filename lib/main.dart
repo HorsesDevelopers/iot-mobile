@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/features/assets-and-resources/presentation/pond-list/pond_list_screen.dart';
+import 'package:mobile/public/core/network/http_client_wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'core/network/http_client_wrapper.dart';
-import 'features/analytics/presentation/pond-analytics/pond_analytics.dart';
-import 'features/da/presentation/pages/home_page.dart';
-import 'features/iam/application/auth_provider.dart';
-import 'features/iam/domain/usecases/sign_in_use_case.dart';
-import 'features/iam/domain/usecases/sign_up_use_case.dart';
-import 'features/iam/infrastructure/datasources/auth_local_data_source.dart';
-import 'features/iam/infrastructure/datasources/auth_remote_data_source.dart';
-import 'features/iam/infrastructure/repositories/auth_repository_impl.dart';
-import 'features/iam/presentation/pages/login_page.dart';
-import 'features/iam/presentation/pages/register_page.dart';
-import 'features/om/application/notification_provider.dart';
-import 'features/om/domain/usecases/get_notifications_use_case.dart';
-import 'features/om/infrastructure/datasources/notification_remote_data_source.dart';
-import 'features/om/infrastructure/repositories/notification_repository_impl.dart';
-import 'features/om/presentation/pages/notifications_page.dart';
+import 'aar/presentation/pond-list/pond_list_screen.dart';
+
+import 'daa/presentation/pond-analytics/pond_analytics.dart';
+import 'iam/application/auth_provider.dart';
+import 'iam/domain/usecases/sign_in_use_case.dart';
+import 'iam/domain/usecases/sign_up_use_case.dart';
+import 'iam/infrastructure/datasources/auth_local_data_source.dart';
+import 'iam/infrastructure/datasources/auth_remote_data_source.dart';
+import 'iam/infrastructure/repositories/auth_repository_impl.dart';
+import 'iam/presentation/home_page.dart';
+import 'iam/presentation/login_page.dart';
+import 'iam/presentation/register_page.dart';
+import 'oam/application/notification_provider.dart';
+import 'oam/domain/usecases/get_notifications_use_case.dart';
+import 'oam/infrastructure/datasources/notification_remote_data_source.dart';
+import 'oam/infrastructure/repositories/notification_repository_impl.dart';
+import 'oam/presentation/pages/notifications_page.dart';
+
+
 
 
 void main() async {
@@ -124,7 +127,7 @@ class MyApp extends StatelessWidget {
           '/home': (context) => const HomePage(),
           '/notifications': (context) => const NotificationsPage(),
           '/ponds': (context) => const PondListScreen(),
-          '/ponds-analytics': (context) => PondStatsPage(),
+          '/ponds-sdp': (context) => PondStatsPage(),
         },
       ),
     );
