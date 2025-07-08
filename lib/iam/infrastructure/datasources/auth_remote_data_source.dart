@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:mobile/common/infrastructure/api_constants.dart';
+
 import '../../../common/core/errors/exceptions.dart';
 import '../../../common/core/network/http_client_wrapper.dart';
 import '../models/auth_response_dto.dart';
@@ -11,14 +13,13 @@ abstract class AuthRemoteDataSource {
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final HttpClientWrapper client;
-  final String baseUrl = 'https://backend-production-5e9e.up.railway.app';
 
   AuthRemoteDataSourceImpl({required this.client});
 
   @override
   Future<AuthResponseDto> signIn(String username, String password) async {
     final response = await client.post(
-      Uri.parse('$baseUrl/api/v1/authentication/sign-in'),
+      Uri.parse('$kBaseApiUrl/api/v1/authentication/sign-in'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'username': username,
@@ -55,7 +56,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<UserDto> signUp(String username, String password, List<String> roles) async {
     try {
       final response = await client.post(
-        Uri.parse('$baseUrl/api/v1/authentication/sign-up'),
+        Uri.parse('$kBaseApiUrl/api/v1/authentication/sign-up'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'username': username,
