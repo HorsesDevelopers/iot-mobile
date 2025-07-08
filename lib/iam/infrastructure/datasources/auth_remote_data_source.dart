@@ -11,7 +11,7 @@ abstract class AuthRemoteDataSource {
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final HttpClientWrapper client;
-  final String baseUrl = 'http://localhost:8091';
+  final String baseUrl = 'https://backend-production-5e9e.up.railway.app';
 
   AuthRemoteDataSourceImpl({required this.client});
 
