@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../common/sidebar/presentation/sidebar_drawer.dart';
 import '../widgets/task_card.dart';
 import '../../application/task_provider.dart';
-import '../../domain/models/task_model.dart';
-import '../../../sidebar/presentation/sidebar_drawer.dart';
 
 class TasksPage extends StatelessWidget {
   const TasksPage({super.key});
