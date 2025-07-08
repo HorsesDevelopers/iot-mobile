@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile/common/core/network/http_client_wrapper.dart';
 import 'package:provider/provider.dart';
+import 'package:mobile/common/core/network/http_client_wrapper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'aar/presentation/pond-list/pond_list_screen.dart';
 
@@ -20,9 +20,8 @@ import 'oam/domain/usecases/get_notifications_use_case.dart';
 import 'oam/infrastructure/datasources/notification_remote_data_source.dart';
 import 'oam/infrastructure/repositories/notification_repository_impl.dart';
 import 'oam/presentation/pages/notifications_page.dart';
-
-
-
+import 'features/tasks/presentation/pages/tasks_page.dart';
+import 'features/tasks/application/task_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -113,6 +112,9 @@ class MyApp extends StatelessWidget {
           ),
           lazy: false,
         ),
+        ChangeNotifierProvider<TaskProvider>(
+          create: (context) => TaskProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'FeedGuard',
@@ -128,6 +130,7 @@ class MyApp extends StatelessWidget {
           '/notifications': (context) => const NotificationsPage(),
           '/ponds': (context) => const PondListScreen(),
           '/ponds-sdp': (context) => PondStatsPage(),
+          '/tasks': (context) => const TasksPage(),
         },
       ),
     );
