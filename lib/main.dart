@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/aar/presentation/pond-create/pond_create.dart';
 import 'package:mobile/sdap/application/task_provider.dart';
 import 'package:mobile/sdap/presentation/pages/tasks_page.dart';
 import 'package:provider/provider.dart';
@@ -130,6 +131,7 @@ class MyApp extends StatelessWidget {
           '/ponds': (context) => const PondListScreen(),
           '/ponds-sdp': (context) => PondStatsPage(),
           '/tasks': (context) => const TasksPage(),
+          '/pond-create': (context) => const CreatePondPage(),
         },
       ),
     );
