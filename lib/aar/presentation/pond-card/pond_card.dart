@@ -15,24 +15,65 @@ class PondCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile(
-        title: Text(pond.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Ubicación: ${pond.ubication}'),
-            Text('Tipo de agua: ${pond.waterType}'),
-            Text('Cantidad de peces: ${pond.fishes.length}'),
-            Text('Volumen: ${pond.volume} m³'),
-            Text('Área: ${pond.area} m²'),
+            Image.network(
+              'https://cdn-icons-png.freepik.com/512/7006/7006177.png',
+              height: 48,
+            ),
+            const SizedBox(height: 10),
+            // Nombre del estanque
+            Text(
+              pond.name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+            // Cantidad de peces
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.iso, color: Colors.blueAccent, size: 20),
+                const SizedBox(width: 6),
+                Text(
+                  'Peces: ${pond.fishes.fold(0, (sum, f) => sum + f.quantity)}',
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            // Tipo de agua
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.opacity, color: Colors.lightBlue, size: 20),
+                const SizedBox(width: 6),
+                Text(
+                  pond.waterType,
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ],
+            ),
+            if (onDelete != null) ...[
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: onDelete,
+                ),
+              ),
+            ],
           ],
         ),
-        trailing: onDelete != null
-            ? IconButton(
-          icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: onDelete,
-        )
-            : null,
       ),
     );
   }

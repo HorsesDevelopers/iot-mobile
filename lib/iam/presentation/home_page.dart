@@ -53,13 +53,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.network(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyXxzSWr0cei2ueRODd1cff6igFil93drvLQ&s',
-                    height: 70,
-                    width: 70,
-                    fit: BoxFit.cover,
-                  ),
-                  Image.network(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyXxzSWr0cei2ueRODd1cff6igFil93drvLQ&s',
+                    'https://cdn-icons-png.freepik.com/512/7006/7006177.png',
                     height: 70,
                     width: 70,
                     fit: BoxFit.cover,

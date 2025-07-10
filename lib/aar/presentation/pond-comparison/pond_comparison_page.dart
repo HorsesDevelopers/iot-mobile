@@ -72,7 +72,7 @@ class _PondComparisonPageState extends State<PondComparisonPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.network(
-                            'https://cdn-icons-png.flaticon.com/512/616/616494.png',
+                            'https://cdn-icons-png.freepik.com/512/7006/7006177.png',
                             height: 40,
                           ),
                           const SizedBox(height: 8),
@@ -145,7 +145,6 @@ class PondComparisonResult extends StatelessWidget {
       {'label': 'Cantidad de Peces', 'icon': Icons.iso, 'getter': (Pond p) => getFishCount(p), 'isNum': true},
     ];
 
-    // Para resaltar el mayor valor numérico
     Map<int, int> getMaxIndexes() {
       final map = <int, int>{};
       for (int i = 0; i < attributes.length; i++) {
@@ -214,7 +213,8 @@ class PondComparisonResult extends StatelessWidget {
                       ...ponds.asMap().entries.map((entry) {
                         final i = entry.key;
                         final pond = entry.value;
-                        final value = attr['getter']!;
+                        final getter = attr['getter'] as dynamic Function(Pond);
+                        final value = getter(pond);
                         final isNum = attr['isNum'] == true;
                         final highlight = isNum && maxIndexes[idx] == i;
                         return DataCell(

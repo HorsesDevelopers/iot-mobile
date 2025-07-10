@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mobile/aar/presentation/pond-comparison/pond_comparison_page.dart';
+import 'package:mobile/aar/presentation/pond-detail/pond_card_detail.dart';
 import 'package:provider/provider.dart';
 import '../../../common/infrastructure/api_constants.dart';
 import '../../../iam/application/auth_provider.dart';
@@ -94,13 +95,23 @@ class _PondListScreenState extends State<PondListScreen> {
             itemCount: ponds.length,
             itemBuilder: (context, index) {
               final pond = ponds[index];
-              return PondCard(
-                pond: pond,
-                onDelete: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Deleted ${pond.name}')),
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PondDetailScreen(pond: pond),
+                    ),
                   );
                 },
+                child: PondCard(
+                  pond: pond,
+                  onDelete: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Deleted ${pond.name}')),
+                    );
+                  },
+                ),
               );
             },
           );
