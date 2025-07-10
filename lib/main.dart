@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/aar/presentation/pond-create/pond_create.dart';
@@ -26,6 +27,7 @@ import 'oam/presentation/pages/notifications_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   runApp(MyApp(sharedPreferences: sharedPreferences));

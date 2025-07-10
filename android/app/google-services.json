@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "223629818293",
+    "project_id": "feedguard-3c68e",
+    "storage_bucket": "feedguard-3c68e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:223629818293:android:b1a9489ba643a7107a81fc",
+        "android_client_info": {
+          "package_name": "com.feedguard.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXdblWfFpWCAeAOZfqGnXmRx7P4XxbuQk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
