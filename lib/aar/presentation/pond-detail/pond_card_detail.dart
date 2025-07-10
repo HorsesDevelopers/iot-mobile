@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import '../../../common/infrastructure/api_constants.dart';
+import '../../../iam/application/auth_provider.dart';
 import '../../domain/entities/pond.dart';
 
 class PondDetailScreen extends StatefulWidget {
@@ -23,10 +25,16 @@ class _PondDetailScreenState extends State<PondDetailScreen> {
   }
 
   Future<void> _createFish(String type, int quantity, int pondId) async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final token = authProvider.token;
+
     final url = Uri.parse('$kBaseApiUrl/api/v1/fishes');
     await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
       body: jsonEncode({
         'type': type,
         'quantity': quantity,
@@ -36,8 +44,17 @@ class _PondDetailScreenState extends State<PondDetailScreen> {
   }
 
   Future<void> _fetchFishes() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final token = authProvider.token;
+
     final url = Uri.parse('$kBaseApiUrl/api/v1/ponds/${pond.id}');
-    final response = await http.get(url);
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       setState(() {
@@ -112,6 +129,17 @@ class _PondDetailScreenState extends State<PondDetailScreen> {
       appBar: AppBar(
         title: Text(pond.name),
         backgroundColor: Colors.black87,
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamed(context, '/home');
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),

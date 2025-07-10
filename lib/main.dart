@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/aar/presentation/pond-create/pond_create.dart';
 import 'package:mobile/sdap/application/task_provider.dart';
 import 'package:mobile/sdap/presentation/pages/tasks_page.dart';
+import 'package:mobile/sdp/presentation/device_page.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/common/core/network/http_client_wrapper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,14 +40,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // 1. Servicios base
         Provider<http.Client>(
           create: (_) => http.Client(),
           dispose: (_, client) => client.close(),
         ),
         Provider<SharedPreferences>.value(value: sharedPreferences),
 
-        // 2. Dependencias de infraestructura
         Provider<HttpClientWrapper>(
           create: (context) => HttpClientWrapper(
             client: context.read<http.Client>(),
@@ -54,7 +53,6 @@ class MyApp extends StatelessWidget {
           ),
         ),
 
-        // 3. Data sources
         Provider<AuthLocalDataSourceImpl>(
           create: (context) => AuthLocalDataSourceImpl(
             sharedPreferences: context.read<SharedPreferences>(),
@@ -132,6 +130,7 @@ class MyApp extends StatelessWidget {
           '/ponds-sdp': (context) => PondStatsPage(),
           '/tasks': (context) => const TasksPage(),
           '/pond-create': (context) => const CreatePondPage(),
+          '/devices': (context) => const DevicePage(),
         },
       ),
     );

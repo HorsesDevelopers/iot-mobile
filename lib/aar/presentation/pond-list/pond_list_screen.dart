@@ -76,6 +76,17 @@ class _PondListScreenState extends State<PondListScreen> {
       appBar: AppBar(
         title: const Text('My Ponds'),
         backgroundColor: Colors.black87,
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamed(context, '/home');
+          },
+        ),
       ),
       body: FutureBuilder<List<Pond>>(
         future: _pondsFuture,

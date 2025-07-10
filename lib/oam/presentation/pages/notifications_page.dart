@@ -1,4 +1,3 @@
-// lib/features/oam/presentation/pages/notifications_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../application/notification_provider.dart';
@@ -26,7 +25,19 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notificaciones'),
+        title: const Text('Notifications'),
+        backgroundColor: Colors.black87,
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamed(context, '/home');
+          },
+        ),
       ),
       body: Consumer<NotificationProvider>(
         builder: (context, provider, child) {

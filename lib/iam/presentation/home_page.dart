@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/sdp/presentation/device_page.dart';
 import 'package:provider/provider.dart';
 import '../../../aar/presentation/pond-list/pond_list_screen.dart';
 import '../../../iam/application/auth_provider.dart';
@@ -24,6 +25,8 @@ class _HomePageState extends State<HomePage> {
       if (!authProvider.isAuthenticated) {
         Navigator.of(context).pushReplacementNamed('/home');
       }
+      final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+      notificationProvider.getNotifications();
     });
   }
   @override
@@ -120,9 +123,23 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(width: 8),
                     Text(
                       provider.status == NotificationStatus.loading
-                          ? 'Load notifications...'
-                          : 'You have ${provider.unreadCount} notifications',
+                          ? 'Cargando notificaciones...'
+                          : 'Tienes ${provider.unreadCount} notificaciones',
                     ),
+                    if (provider.unreadCount > 0) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '${provider.unreadCount}',
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
