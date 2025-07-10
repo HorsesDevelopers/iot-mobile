@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../common/infrastructure/api_constants.dart';
 import '../../../iam/application/auth_provider.dart';
 import '../../domain/entities/pond.dart';
+import '../../domain/entities/sensor.dart';
 
 class PondDetailScreen extends StatefulWidget {
   final Pond pond;
@@ -17,11 +18,13 @@ class PondDetailScreen extends StatefulWidget {
 
 class _PondDetailScreenState extends State<PondDetailScreen> {
   late Pond pond;
+  List<Sensor> sensors = [];
 
   @override
   void initState() {
     super.initState();
     pond = widget.pond;
+    _fetchSensors();
   }
 
   Future<void> _createFish(String type, int quantity, int pondId) async {
@@ -59,6 +62,26 @@ class _PondDetailScreenState extends State<PondDetailScreen> {
       final data = jsonDecode(response.body);
       setState(() {
         pond = Pond.fromJson(data);
+      });
+    }
+  }
+
+  Future<void> _fetchSensors() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final token = authProvider.token;
+
+    final url = Uri.parse('$kBaseApiUrl/api/v1/sensors');
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      setState(() {
+        sensors = data.map((e) => Sensor.fromJson(e)).toList();
       });
     }
   }
@@ -118,12 +141,6 @@ class _PondDetailScreenState extends State<PondDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final fishCount = pond.fishes.fold(0, (sum, f) => sum + f.quantity);
-
-    final sensors = [
-      {'name': 'Sensor de pH', 'value': '7.2'},
-      {'name': 'Sensor de Temperatura', 'value': '25°C'},
-      {'name': 'Sensor de Oxígeno', 'value': '8.1 mg/L'},
-    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -228,10 +245,13 @@ class _PondDetailScreenState extends State<PondDetailScreen> {
                         ),
                         // Sensores
                         ListView(
-                          children: sensors.map((s) => ListTile(
+                          children: sensors.isEmpty
+                              ? [const Text('No hay sensores registrados')]
+                              : sensors.map((s) => ListTile(
                             leading: const Icon(Icons.sensors, color: Colors.green),
-                            title: Text(s['name']!),
-                            trailing: Text(s['value']!),
+                            title: Text('Sensor #${s.id}'),
+                            subtitle: Text('Oxígeno: ${s.oxygenLevel} | Temp: ${s.temperatureLevel}°C'),
+                            trailing: Text(s.status),
                           )).toList(),
                         ),
                       ],
