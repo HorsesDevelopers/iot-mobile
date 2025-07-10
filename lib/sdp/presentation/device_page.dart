@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../application/device_provider.dart';
-import '../domain/entities/device.dart';
 
 class DevicePage extends StatelessWidget {
   const DevicePage({super.key});

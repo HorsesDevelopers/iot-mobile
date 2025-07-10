@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/sdp/presentation/device_page.dart';
 import 'package:provider/provider.dart';
 import '../../../aar/presentation/pond-list/pond_list_screen.dart';
 import '../../../iam/application/auth_provider.dart';
