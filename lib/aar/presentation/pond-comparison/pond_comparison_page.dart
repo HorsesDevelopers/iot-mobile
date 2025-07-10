@@ -194,7 +194,7 @@ class PondComparisonResult extends StatelessWidget {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: DataTable(
-                headingRowColor: MaterialStateProperty.all(Colors.grey.shade100),
+                headingRowColor: WidgetStateProperty.all(Colors.grey.shade100),
                 columns: [
                   const DataColumn(label: SizedBox(width: 120, child: Text('Atributo', style: TextStyle(fontWeight: FontWeight.bold)))),
                   ...ponds.map((p) => DataColumn(label: SizedBox(width: 100, child: Center(child: Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)))))),
