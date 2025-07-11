@@ -30,8 +30,19 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.account_circle, size: 100, color: Colors.deepPurple),
-                const SizedBox(height: 32),
+                Image.asset(
+                  'assets/logo.png',
+                  height: 100,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Bienvenido a FeedGuard',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 24),
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(
@@ -78,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.pushNamed(context, '/register');
                   },
-                  child: const Text('Don'"t have an account? Sign up'"),
+                  child: const Text('Don\'t have an account? Sign up'),
                 ),
               ],
             ),

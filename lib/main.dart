@@ -4,11 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/aar/presentation/pond-create/pond_create.dart';
 import 'package:mobile/sdap/application/task_provider.dart';
 import 'package:mobile/sdap/presentation/pages/tasks_page.dart';
+import 'package:mobile/sdp/application/sensor_provider.dart';
+import 'package:mobile/sdp/infrastructure/sensor_repository.dart';
 import 'package:mobile/sdp/presentation/device_page.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/common/core/network/http_client_wrapper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'aar/presentation/pond-list/pond_list_screen.dart';
+import 'common/infrastructure/api_constants.dart';
 import 'daa/presentation/pond-analytics/pond_analytics.dart';
 import 'iam/application/auth_provider.dart';
 import 'iam/domain/usecases/sign_in_use_case.dart';
@@ -99,7 +102,11 @@ class MyApp extends StatelessWidget {
             context.read<NotificationRepositoryImpl>(),
           ),
         ),
-
+        ChangeNotifierProvider<SensorProvider>(
+          create: (_) => SensorProvider(
+            SensorRepository(kBaseApiUrl),
+          ),
+        ),
         ChangeNotifierProvider<AuthProvider>(
           create: (context) => AuthProvider(
             signInUseCase: context.read<SignInUseCase>(),
@@ -118,6 +125,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'FeedGuard',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,

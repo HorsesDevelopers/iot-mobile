@@ -18,7 +18,7 @@ class SidebarDrawer extends StatelessWidget {
           const SizedBox(height: 40),
           _buildDrawerItem(context, 'Home', route: '/home'),
           _buildDrawerItem(context, 'My Ponds', route: '/ponds'),
-          _buildDrawerItem(context, 'Devices', route: '/home'),
+          _buildDrawerItem(context, 'Devices', route: '/devices'),
           _buildDrawerItem(context, 'Notifications', route: '/notifications'),
           _buildDrawerItem(context, 'Tasks', route: '/tasks'),
           _buildDrawerItem(context, 'Settings', route: '/settings'),

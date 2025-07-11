@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/sdp/presentation/device_page.dart';
 import 'package:provider/provider.dart';
 import '../../../aar/presentation/pond-list/pond_list_screen.dart';
 import '../../../iam/application/auth_provider.dart';
@@ -82,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const PondListScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const DevicePage()));
               },
             ),
             const SizedBox(height: 20),
