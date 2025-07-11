@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/sdp/presentation/device_page.dart';
 import 'package:provider/provider.dart';
-import '../../../aar/presentation/pond-list/pond_list_screen.dart';
 import '../../../iam/application/auth_provider.dart';
 import '../../oam/application/notification_provider.dart';
 import '../../oam/presentation/pages/notifications_page.dart';
 import '../../oam/presentation/widgets/notification_badge.dart';
 import '../../common/sidebar/presentation/sidebar_drawer.dart';
-
+import '../../sdp/domain/entities/sensor.dart';
+import '../../common/infrastructure/api_constants.dart';
+import '../../sdp/infrastructure/sensor_repository.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,6 +30,7 @@ class _HomePageState extends State<HomePage> {
       notificationProvider.getNotifications();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,16 +72,31 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 20),
             _buildCard(
               title: 'Devices',
-              child: Container(
-                color: Colors.grey.shade300,
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    _buildDeviceRow('TQ-0001', 'Optimal'),
-                    _buildDeviceRow('TQ-0002', 'Error'),
-                    _buildDeviceRow('TQ-0003', 'Error'),
-                    _buildDeviceRow('TQ-0004', 'Optimal'),
-                  ],
+              child: SizedBox(
+                height: 70,
+                child: FutureBuilder<List<Sensor>>(
+                  future: SensorRepository(kBaseApiUrl).fetchSensors(
+                    Provider.of<AuthProvider>(context, listen: false).token!,
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return const Center(child: Text('Error al cargar sensores'));
+                    }
+                    final sensors = snapshot.data ?? [];
+                    final activos = sensors.where((s) => s.status.toUpperCase() == 'ACTIVE').length;
+                    final errores = sensors.where((s) => s.status.toUpperCase() == 'ERROR').length;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildSensorSummary(Icons.sensors, 'Total', sensors.length, Colors.blue),
+                        _buildSensorSummary(Icons.check_circle, 'Activos', activos, Colors.green),
+                        _buildSensorSummary(Icons.error, 'Error', errores, Colors.red),
+                      ],
+                    );
+                  },
                 ),
               ),
               onPressed: () {
@@ -95,6 +112,18 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSensorSummary(IconData icon, String label, int count, Color color) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: color, size: 28),
+        const SizedBox(height: 4),
+        Text('$count', style: TextStyle(fontWeight: FontWeight.bold, color: color)),
+        Text(label, style: const TextStyle(fontSize: 12)),
+      ],
     );
   }
 
@@ -198,19 +227,6 @@ class _HomePageState extends State<HomePage> {
             ),
             child: const Icon(Icons.arrow_forward),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDeviceRow(String id, String status) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(id),
-          Text(status),
         ],
       ),
     );
