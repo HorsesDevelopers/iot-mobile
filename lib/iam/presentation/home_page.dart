@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/aar/domain/infrastructure/SensorWebSocketPage.dart';
 import 'package:mobile/sdp/presentation/device_page.dart';
 import 'package:provider/provider.dart';
 import '../../../iam/application/auth_provider.dart';
+import '../../aar/domain/infrastructure/sensor_data_provider.dart';
 import '../../oam/application/notification_provider.dart';
 import '../../oam/presentation/pages/notifications_page.dart';
 import '../../oam/presentation/widgets/notification_badge.dart';
@@ -52,6 +54,34 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Sensores en tiempo real',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Consumer<SensorDataProvider>(
+                  builder: (context, provider, _) {
+                    final logs = provider.sensorLogs;
+                    if (logs.isEmpty) {
+                      return const Text('No hay datos de sensores en tiempo real');
+                    }
+                    final lastLogs = logs.reversed.take(3).toList();
+                    return Column(
+                      children: lastLogs.map((sensor) => ListTile(
+                        leading: const Icon(Icons.sensors, color: Colors.green),
+                        title: Text('Estanque: ${sensor['pondId'] ?? '-'} | Tipo: ${sensor['sensorType'] ?? '-'}'),
+                        subtitle: Text('Valor: ${sensor['value'] ?? '-'} | Estado: ${sensor['status'] ?? '-'}'),
+                        trailing: Text(sensor['timestamp']?.toString() ?? ''),
+                      )).toList(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
             _buildCard(
               title: 'My Ponds',
               child: Row(
@@ -100,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const DevicePage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const SensorWebSocketPage()));
               },
             ),
             const SizedBox(height: 20),

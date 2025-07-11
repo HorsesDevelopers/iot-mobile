@@ -1,1 +1,1 @@
-const String kBaseApiUrl = 'https://backend-production-5e9e.up.railway.app';
+const String kBaseApiUrl = 'http://10.0.2.2:8091';

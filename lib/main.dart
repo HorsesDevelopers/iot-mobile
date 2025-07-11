@@ -1,15 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/aar/domain/infrastructure/SensorWebSocketPage.dart';
 import 'package:mobile/aar/presentation/pond-create/pond_create.dart';
 import 'package:mobile/sdap/application/task_provider.dart';
 import 'package:mobile/sdap/presentation/pages/tasks_page.dart';
 import 'package:mobile/sdp/application/sensor_provider.dart';
 import 'package:mobile/sdp/infrastructure/sensor_repository.dart';
-import 'package:mobile/sdp/presentation/device_page.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile/common/core/network/http_client_wrapper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'aar/domain/infrastructure/sensor_data_provider.dart';
+import 'aar/domain/infrastructure/sensor_websocket_service.dart';
 import 'aar/presentation/pond-list/pond_list_screen.dart';
 import 'common/infrastructure/api_constants.dart';
 import 'daa/presentation/pond-analytics/pond_analytics.dart';
@@ -97,6 +99,9 @@ class MyApp extends StatelessWidget {
             context.read<AuthRepositoryImpl>(),
           ),
         ),
+        ChangeNotifierProvider<SensorDataProvider>(
+          create: (_) => SensorDataProvider(),
+        ),
         Provider<GetNotificationsUseCase>(
           create: (context) => GetNotificationsUseCase(
             context.read<NotificationRepositoryImpl>(),
@@ -123,24 +128,30 @@ class MyApp extends StatelessWidget {
           create: (context) => TaskProvider(),
         ),
       ],
-      child: MaterialApp(
-        title: 'FeedGuard',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        initialRoute: '/login',
-        routes: {
-          '/login': (context) => const LoginPage(),
-          '/register': (context) => const RegisterPage(),
-          '/home': (context) => const HomePage(),
-          '/notifications': (context) => const NotificationsPage(),
-          '/ponds': (context) => const PondListScreen(),
-          '/ponds-sdp': (context) => PondStatsPage(),
-          '/tasks': (context) => const TasksPage(),
-          '/pond-create': (context) => const CreatePondPage(),
-          '/devices': (context) => const DevicePage(),
+      child: Builder(
+        builder: (context) {
+          // Conexión WebSocket global para sensores
+          SensorWebSocketService().connect(context);
+          return MaterialApp(
+            title: 'FeedGuard',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            initialRoute: '/login',
+            routes: {
+              '/login': (context) => const LoginPage(),
+              '/register': (context) => const RegisterPage(),
+              '/home': (context) => const HomePage(),
+              '/notifications': (context) => const NotificationsPage(),
+              '/ponds': (context) => const PondListScreen(),
+              '/ponds-sdp': (context) => PondStatsPage(),
+              '/tasks': (context) => const TasksPage(),
+              '/pond-create': (context) => const CreatePondPage(),
+              '/devices': (context) => const SensorWebSocketPage(),
+            },
+          );
         },
       ),
     );

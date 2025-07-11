@@ -4,11 +4,13 @@ import '../../domain/entities/pond.dart';
 class PondCard extends StatelessWidget {
   final Pond pond;
   final VoidCallback? onDelete;
+  final VoidCallback? onUpdate; // Nuevo callback
 
   const PondCard({
     super.key,
     required this.pond,
     this.onDelete,
+    this.onUpdate, // Nuevo parámetro
   });
 
   @override
@@ -27,7 +29,6 @@ class PondCard extends StatelessWidget {
               height: 48,
             ),
             const SizedBox(height: 10),
-            // Nombre del estanque
             Text(
               pond.name,
               style: const TextStyle(
@@ -37,7 +38,6 @@ class PondCard extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 6),
-            // Cantidad de peces
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -50,7 +50,6 @@ class PondCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 4),
-            // Tipo de agua
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -62,14 +61,23 @@ class PondCard extends StatelessWidget {
                 ),
               ],
             ),
-            if (onDelete != null) ...[
+            if (onDelete != null || onUpdate != null) ...[
               const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: onDelete,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (onUpdate != null)
+                    IconButton(
+                      icon: const Icon(Icons.refresh, color: Colors.blue),
+                      onPressed: onUpdate,
+                      tooltip: 'Actualizar estanque',
+                    ),
+                  if (onDelete != null)
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: onDelete,
+                    ),
+                ],
               ),
             ],
           ],

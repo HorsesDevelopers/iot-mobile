@@ -6,6 +6,7 @@ import '../../../common/infrastructure/api_constants.dart';
 import '../../../iam/application/auth_provider.dart';
 import '../../domain/entities/pond.dart';
 import '../../domain/entities/sensor.dart';
+import '../../domain/infrastructure/sensor_data_provider.dart';
 
 class PondDetailScreen extends StatefulWidget {
   final Pond pond;
@@ -18,13 +19,11 @@ class PondDetailScreen extends StatefulWidget {
 
 class _PondDetailScreenState extends State<PondDetailScreen> {
   late Pond pond;
-  List<Sensor> sensors = [];
 
   @override
   void initState() {
     super.initState();
     pond = widget.pond;
-    _fetchSensors();
   }
 
   Future<void> _createFish(String type, int quantity, int pondId) async {
@@ -62,26 +61,6 @@ class _PondDetailScreenState extends State<PondDetailScreen> {
       final data = jsonDecode(response.body);
       setState(() {
         pond = Pond.fromJson(data);
-      });
-    }
-  }
-
-  Future<void> _fetchSensors() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final token = authProvider.token;
-
-    final url = Uri.parse('$kBaseApiUrl/api/v1/sensors');
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-      setState(() {
-        sensors = data.map((e) => Sensor.fromJson(e)).toList();
       });
     }
   }
@@ -243,16 +222,27 @@ class _PondDetailScreenState extends State<PondDetailScreen> {
                             ),
                           ],
                         ),
-                        // Sensores
-                        ListView(
-                          children: sensors.isEmpty
-                              ? [const Text('No hay sensores registrados')]
-                              : sensors.map((s) => ListTile(
-                            leading: const Icon(Icons.sensors, color: Colors.green),
-                            title: Text('Sensor #${s.id}'),
-                            subtitle: Text('Oxígeno: ${s.oxygenLevel} | Temp: ${s.temperatureLevel}°C'),
-                            trailing: Text(s.status),
-                          )).toList(),
+                        // Sensores (en tiempo real usando el provider global)
+                        Consumer<SensorDataProvider>(
+                          builder: (context, provider, _) {
+                            print(provider.sensorLogs); // <-- Esto te mostrará los sensores en consola
+                            final pondSensors = provider.sensorLogs
+                                .where((s) => s['pondId'] == pond.id)
+                                .toList();
+
+                            if (pondSensors.isEmpty) {
+                              return const Center(child: Text('No hay sensores registrados para este estanque'));
+                            }
+
+                            return ListView(
+                              children: pondSensors.map((s) => ListTile(
+                                leading: const Icon(Icons.sensors, color: Colors.green),
+                                title: Text('Sensor #${s['id'] ?? '-'}'),
+                                subtitle: Text('Tipo: ${s['sensorType'] ?? '-'} | Valor: ${s['value'] ?? '-'}'),
+                                trailing: Text(s['status'] ?? ''),
+                              )).toList(),
+                            );
+                          },
                         ),
                       ],
                     ),
