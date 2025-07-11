@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/aar/domain/infrastructure/SensorWebSocketPage.dart';
+import 'package:mobile/sdp/presentation/device_page.dart';
 import 'package:provider/provider.dart';
-import '../../../aar/presentation/pond-list/pond_list_screen.dart';
 import '../../../iam/application/auth_provider.dart';
+import '../../aar/domain/infrastructure/sensor_data_provider.dart';
 import '../../oam/application/notification_provider.dart';
 import '../../oam/presentation/pages/notifications_page.dart';
 import '../../oam/presentation/widgets/notification_badge.dart';
 import '../../common/sidebar/presentation/sidebar_drawer.dart';
-
+import '../../sdp/domain/entities/sensor.dart';
+import '../../common/infrastructure/api_constants.dart';
+import '../../sdp/infrastructure/sensor_repository.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,8 +28,11 @@ class _HomePageState extends State<HomePage> {
       if (!authProvider.isAuthenticated) {
         Navigator.of(context).pushReplacementNamed('/home');
       }
+      final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+      notificationProvider.getNotifications();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,19 +54,41 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Sensores en tiempo real',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Consumer<SensorDataProvider>(
+                  builder: (context, provider, _) {
+                    final logs = provider.sensorLogs;
+                    if (logs.isEmpty) {
+                      return const Text('No hay datos de sensores en tiempo real');
+                    }
+                    final lastLogs = logs.reversed.take(3).toList();
+                    return Column(
+                      children: lastLogs.map((sensor) => ListTile(
+                        leading: const Icon(Icons.sensors, color: Colors.green),
+                        title: Text('Estanque: ${sensor['pondId'] ?? '-'} | Tipo: ${sensor['sensorType'] ?? '-'}'),
+                        subtitle: Text('Valor: ${sensor['value'] ?? '-'} | Estado: ${sensor['status'] ?? '-'}'),
+                        trailing: Text(sensor['timestamp']?.toString() ?? ''),
+                      )).toList(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
             _buildCard(
               title: 'My Ponds',
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Image.network(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyXxzSWr0cei2ueRODd1cff6igFil93drvLQ&s',
-                    height: 70,
-                    width: 70,
-                    fit: BoxFit.cover,
-                  ),
-                  Image.network(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyXxzSWr0cei2ueRODd1cff6igFil93drvLQ&s',
+                    'https://cdn-icons-png.freepik.com/512/7006/7006177.png',
                     height: 70,
                     width: 70,
                     fit: BoxFit.cover,
@@ -73,20 +102,35 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 20),
             _buildCard(
               title: 'Devices',
-              child: Container(
-                color: Colors.grey.shade300,
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    _buildDeviceRow('TQ-0001', 'Optimal'),
-                    _buildDeviceRow('TQ-0002', 'Error'),
-                    _buildDeviceRow('TQ-0003', 'Error'),
-                    _buildDeviceRow('TQ-0004', 'Optimal'),
-                  ],
+              child: SizedBox(
+                height: 70,
+                child: FutureBuilder<List<Sensor>>(
+                  future: SensorRepository(kBaseApiUrl).fetchSensors(
+                    Provider.of<AuthProvider>(context, listen: false).token!,
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return const Center(child: Text('Error al cargar sensores'));
+                    }
+                    final sensors = snapshot.data ?? [];
+                    final activos = sensors.where((s) => s.status.toUpperCase() == 'ACTIVE').length;
+                    final errores = sensors.where((s) => s.status.toUpperCase() == 'ERROR').length;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildSensorSummary(Icons.sensors, 'Total', sensors.length, Colors.blue),
+                        _buildSensorSummary(Icons.check_circle, 'Activos', activos, Colors.green),
+                        _buildSensorSummary(Icons.error, 'Error', errores, Colors.red),
+                      ],
+                    );
+                  },
                 ),
               ),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const PondListScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const SensorWebSocketPage()));
               },
             ),
             const SizedBox(height: 20),
@@ -98,6 +142,18 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSensorSummary(IconData icon, String label, int count, Color color) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, color: color, size: 28),
+        const SizedBox(height: 4),
+        Text('$count', style: TextStyle(fontWeight: FontWeight.bold, color: color)),
+        Text(label, style: const TextStyle(fontSize: 12)),
+      ],
     );
   }
 
@@ -126,9 +182,23 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(width: 8),
                     Text(
                       provider.status == NotificationStatus.loading
-                          ? 'Load notifications...'
-                          : 'You have ${provider.unreadCount} notifications',
+                          ? 'Cargando notificaciones...'
+                          : 'Tienes ${provider.unreadCount} notificaciones',
                     ),
+                    if (provider.unreadCount > 0) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '${provider.unreadCount}',
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -192,22 +262,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildDeviceRow(String id, String status) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(id),
-          Text(status),
-        ],
-      ),
-    );
-  }
-
   Widget _buildActionButton(String text) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        if (text == 'See Tasks') {
+          Navigator.pushReplacementNamed(context, '/tasks');
+        }
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.redAccent.shade100,
         padding: const EdgeInsets.symmetric(vertical: 12),

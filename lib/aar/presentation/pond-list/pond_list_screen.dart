@@ -1,159 +1,172 @@
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:mobile/aar/presentation/pond-comparison/pond_comparison_page.dart';
+import 'package:mobile/aar/presentation/pond-detail/pond_card_detail.dart';
+import 'package:provider/provider.dart';
+import '../../../common/infrastructure/api_constants.dart';
+import '../../../iam/application/auth_provider.dart';
 import '../../domain/entities/pond.dart';
-import '../pond-comparison/pond_comparison_page.dart' as comparison;
-import '../pond-create/pond_create.dart';
-import '../pond-detail/pond_card_screen.dart' as detail;
+import '../pond-card/pond_card.dart';
 
-class PondListScreen extends StatelessWidget {
+class PondListScreen extends StatefulWidget {
   const PondListScreen({super.key});
 
   @override
+  State<PondListScreen> createState() => _PondListScreenState();
+}
+
+class _PondListScreenState extends State<PondListScreen> {
+  late Future<List<Pond>> _pondsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final token = authProvider.token;
+      setState(() {
+        _pondsFuture = fetchPonds(token!);
+      });
+    });
+  }
+
+  Future<List<Pond>> fetchPonds(String token) async {
+    final response = await http.get(
+      Uri.parse('$kBaseApiUrl/api/v1/ponds'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+    print('Status: ${response.statusCode}');
+    print('Body: ${response.body}');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data is List) {
+        final dateFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
+        return data.map((json) => Pond(
+          id: json['id'],
+          name: json['name'],
+          ubication: json['ubication'],
+          waterType: json['waterType'],
+          fishes: (json['fishes'] as List).map((f) => Fish(
+            id: f['id'],
+            type: f['type'],
+            quantity: f['quantity'],
+            pondId: f['pondId'],
+            createdAt: dateFormat.parse(f['createdAt']),
+          )).toList(),
+          volume: (json['volume'] as num).toDouble(),
+          area: (json['area'] as num).toDouble(),
+          createdAt: dateFormat.parse(json['createdAt']),
+        )).toList();
+      } else {
+        throw Exception('El backend no devolvió una lista');
+      }
+    } else {
+      throw Exception('Error al cargar los estanques: ${response.statusCode} - ${response.body}');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final List<Pond> ponds = [
-      Pond(
-        id: '1',
-        name: 'River Pond',
-        fish: 10,
-        sensors: 5,
-        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyXxzSWr0cei2ueRODd1cff6igFil93drvLQ&s',
-      ),
-      Pond(
-        id: '2',
-        name: 'Home Pond',
-        fish: 3,
-        sensors: 2,
-        imageUrl: 'https://c8.alamy.com/comp/ET160H/goldfish-pond-dong-yang-palace-lu-residential-complex-imperial-palace-ET160H.jpg',
-      ),
-    ];
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Ponds'),
         backgroundColor: Colors.black87,
-    ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Create Pond Button (just under the title)
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const CreatePondPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent.shade100,
-                minimumSize: const Size.fromHeight(50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text('Create Pond'),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView.builder(
-                itemCount: ponds.length,
-                itemBuilder: (context, index) {
-                  final pond = ponds[index];
-                  return detail.PondCard(
-                    name: pond.name,
-                    sensors: pond.sensors,
-                    fish: pond.fish,
-                    imageUrl: pond.imageUrl,
-                    onDelete: () {
-                      // Aquí tu lógica de borrado
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Deleted ${pond.name}'),
-                        ),
-                      );
-                    },
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushNamed(context, '/home');
+          },
+        ),
+      ),
+      body: FutureBuilder<List<Pond>>(
+        future: _pondsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          final ponds = snapshot.data ?? [];
+          if (ponds.isEmpty) {
+            return const Center(child: Text('No hay estanques'));
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: ponds.length,
+            itemBuilder: (context, index) {
+              final pond = ponds[index];
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PondDetailScreen(pond: pond),
+                    ),
                   );
                 },
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => _showCompareDialog(context, ponds),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent.shade100,
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                child: PondCard(
+                  pond: pond,
+                  onDelete: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Deleted ${pond.name}')),
+                    );
+                  },
                 ),
-              ),
-              child: const Text(
-                'Compare',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ],
-        ),
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: 'compare',
+            backgroundColor: Colors.blueAccent,
+            child: const Icon(Icons.compare_arrows),
+            onPressed: () async {
+              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              final token = authProvider.token;
+              final ponds = await fetchPonds(token!);
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PondComparisonPage(ponds: ponds),
+                ),
+              );
+              setState(() {
+                _pondsFuture = fetchPonds(token);
+              });
+            },
+          ),
+          const SizedBox(height: 12),
+          FloatingActionButton(
+            heroTag: 'add',
+            backgroundColor: Colors.redAccent.shade100,
+            child: const Icon(Icons.add),
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/pond-create');
+              final authProvider = Provider.of<AuthProvider>(context, listen: false);
+              final token = authProvider.token;
+              setState(() {
+                _pondsFuture = fetchPonds(token!);
+              });
+            },
+          ),
+        ],
       ),
     );
   }
-
-  void _showCompareDialog(BuildContext context, List<Pond> ponds) {
-  List<Pond> selected = [];
-
-  showDialog(
-    context: context,
-    builder: (context) {
-      return StatefulBuilder(builder: (context, setState) {
-        return AlertDialog(
-          title: const Text('Select 2 Ponds to Compare'),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: ListView(
-              shrinkWrap: true,
-              children: ponds.map((pond) {
-                final isSelected = selected.contains(pond);
-                return CheckboxListTile(
-                  value: isSelected,
-                  title: Text(pond.name),
-                  onChanged: (value) {
-                    setState(() {
-                      if (value == true && selected.length < 2) {
-                        selected.add(pond);
-                      } else if (value == false) {
-                        selected.remove(pond);
-                      }
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: selected.length == 2
-                  ? () {
-                      Navigator.pop(context); // Cierra el diálogo
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => comparison.PondComparisonPage(
-                            pondA: selected[0],
-                            pondB: selected[1],
-                          ),
-                        ),
-                      );
-                    }
-                  : null,
-              child: const Text('Compare'),
-            ),
-          ],
-        );
-      });
-    },
-  );
-}
-
 }

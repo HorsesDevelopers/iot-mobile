@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../common/core/errors/exceptions.dart';
+import '../../../common/infrastructure/api_constants.dart';
 import '../models/notification_dto.dart';
 import '../../../iam/infrastructure/datasources/auth_local_data_source.dart';
 
@@ -12,7 +13,7 @@ abstract class NotificationRemoteDataSource {
 class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   final http.Client client;
   final AuthLocalDataSource localDataSource;
-  final baseUrl = 'http://localhost:8091/api/v1';
+  final baseUrl = '$kBaseApiUrl/api/v1';
 
   NotificationRemoteDataSourceImpl({
     required this.client,
@@ -25,7 +26,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       final token = await localDataSource.getToken();
 
       final response = await client.get(
-        Uri.parse('$baseUrl/oam'),
+        Uri.parse('$baseUrl/notifications'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
